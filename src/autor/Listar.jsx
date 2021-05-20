@@ -1,60 +1,92 @@
-import React, { Component } from 'react';
-import { findAllAutors } from '../service/AutorService';
+import React, { Component } from "react";
+import { Link } from 'react-router-dom';
+
+import { findAllAutors } from "../service/AutorService";
 
 class ListarAutor extends Component {
+  constructor() {
+    super();
+    this.state = this.initState();
+  }
 
-    constructor(){
-        super()
-        this.state = this.initState();
-    }
+  initState = () => ({
+    autores: [],
+    paginaInicio: 0,
+    paginaFim: 0,
+  });
 
-  
-    initState = () => ({
-       autores:[], 
-       paginaInicio:0,
-       paginaFim:0,     
-    })
+  async componentDidMount() {
+    const autores = await findAllAutors();
+    this.setState({
+      autores: autores.data,
+      paginaInicio: autores.current_page,
+      paginaFim: autores.total,
+    });
+  }
 
+  render() {
+    const { autores } = this.state;
 
-    async componentDidMount(){
-        const autores = await findAllAutors();   
-        this.setState({
-            autores:autores.data,
-            paginaInicio:autores.current_page,
-            paginaFim:autores.total,
-        })
-    }
+    return (
+      <div>
+        <div className="container">
+          <div className="app-title">
+            <h1>
+              <i className="fa fa-edit">Lista de usuários</i>
+            </h1>
+            <ul className="app-breadcrumb breadcrumb">
+              <li className="breadcrumb-item">
+                <i className="fa fa-search fa-lg"></i>
+              </li>
+              <li className="breadcrumb-item">
+                <a href="#">Menu Principal</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="container">
+          <div className="tile">
+            <div className="tile-body">
+              <div id="no-more-tables">
+                <table className="table table-striped table-bordered table-hover cf ">
+                  <thead className="cf">
+                    <tr>
+                      <th>Id</th>
+                      <th>Nome</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {autores.map( (autor) => (
+                    <tr key={autor.id}>
+                      <td>{ autor.id }</td>
+                      <td>{ autor.nome }</td>
+                      <td>
+                        <a className="btn btn-info btn-sm" href="#">
+                          <i className="fa fa-pencil"></i>
+                        </a>
+                        <a className="btn btn-danger btn-sm" href="#">
+                          <i className="fa fa-trash"></i>
+                        </a>
+                        <a className="btn btn-warning btn-sm" href="#">
+                          <i className="fa fa-address-book"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    ))}
 
-
-    render() {
-
-        const { autores } = this.state
-   
-        return(
-            <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>nome</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {autores.map( (autor) => (<tr key={autor.id}><td>{ autor.id }</td><td>{ autor.nome }</td></tr>))}
-                        
-                    </tbody>
+                  </tbody>
                 </table>
-
+                <Link className="btn btn-success btn-lg" to="/autor/inserir" title="Incluir novo Registro">
+                  <i className="fa fa-plus-circle"></i>
+                </Link>
+              </div>
             </div>
-        )
-    }
-
-
-
-
-
-
-
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default ListarAutor;

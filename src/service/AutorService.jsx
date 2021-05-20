@@ -9,3 +9,22 @@ export const findAllAutors = async () => {
             })
     )
 } 
+
+
+export const createAutor = async ( autor ) => {
+    console.log(" passando pela rotina de inclusão do autor ");
+    return (
+        http({
+            method:'post',
+            url:'/autor/salvar',
+            data:autor,
+            headers:{
+                'Content-Type':'application/json'
+            },
+        }).then(res => {
+            console.log(res.data);
+            return res.data
+        })
+
+    )
+}
