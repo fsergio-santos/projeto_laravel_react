@@ -62,9 +62,9 @@ class ListarAutor extends Component {
                       <td>{ autor.id }</td>
                       <td>{ autor.nome }</td>
                       <td>
-                        <a className="btn btn-info btn-sm" href="#">
+                        <Link className="btn btn-info btn-sm" to={`/autor/alterar/${autor.id}`}>
                           <i className="fa fa-pencil"></i>
-                        </a>
+                        </Link>
                         <a className="btn btn-danger btn-sm" href="#">
                           <i className="fa fa-trash"></i>
                         </a>

@@ -4,15 +4,26 @@ import http from '../util/banco';
 export const findAllAutors = async () => {
     return (
         http.get('/autor/listar')
-            .then( response => {
-                return response.data;
+            .then( res => {
+                return res.data;
             })
     )
 } 
 
 
+export const findAutorById = async ( id ) => {
+    return (
+        http.get(`/autor/alterar/${id}`)
+            .then( res => { 
+                return res.data; 
+            }).catch( error => {
+                return error.response;
+            })
+    )
+}
+
+
 export const createAutor = async ( autor ) => {
-    console.log(" passando pela rotina de inclusão do autor ");
     return (
         http({
             method:'post',
@@ -22,8 +33,26 @@ export const createAutor = async ( autor ) => {
                 'Content-Type':'application/json'
             },
         }).then(res => {
+            return res.data
+        })
+
+    )
+}
+
+export const updateAutor = async ( autor ) => {
+    return (
+        http({
+            method:'post',
+            url:`/autor/update/${autor.id}`,
+            data:autor,
+            headers:{
+                'Content-Type':'application/json'
+            },
+        }).then(res => {
             console.log(res.data);
             return res.data
+        }).catch(error => {
+            return error.response
         })
 
     )

@@ -1,9 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { createAutor } from "../service/AutorService";
-import { validarAutor } from "../validacao/ValidAutor";
+import { findAutorById, updateAutor } from "../service/AutorService";
 
-class IncluirAutor extends React.Component {
+class AlterarAutor extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.initState();
@@ -24,42 +23,32 @@ class IncluirAutor extends React.Component {
     email: "",
     telefone_celular: "",
     telefone_fixo: "",
-
-    toReturn:false,
-
-
-    formValidation :{
-      nome: [],
-      pseudonimo: [],
-      data_nascimento: [],
-      sexo: [],
-      rg: [],
-      cpf: [],
-      endereco: [],
-      cep: [],
-      cidade: [],
-      bairro: [],
-      email: [],
-      telefone_celular: [],
-      telefone_fixo: [],
-
-      validNome: false,
-      validPseudonimo: false,
-      validData_nascimento:false,
-      validSexo: false,
-      validRg: false,
-      validCpf: false,
-      validEndereco: false,
-      validCep: false,
-      validCidade: false,
-      validBairro: false,
-      validEmail: false,
-      validTelefone_celular: false,
-      validTelefone_fixo: false,
-
-    }
-
   });
+
+  componentDidMount() {
+    const { id } = this.props.match.params;
+    this.loadData(id);
+  }
+
+  async loadData(id) {
+    const resposta_servidor = await findAutorById(id);
+    this.setState({
+      id: resposta_servidor.autor.id,
+      nome: resposta_servidor.autor.nome,
+      pseudonimo: resposta_servidor.autor.pseudonimo,
+      data_nascimento: resposta_servidor.autor.data_nascimento,
+      sexo: resposta_servidor.autor.sexo,
+      rg: resposta_servidor.autor.rg,
+      cpf: resposta_servidor.autor.cpf,
+      endereco: resposta_servidor.autor.endereco,
+      cep: resposta_servidor.autor.cep,
+      cidade: resposta_servidor.autor.cidade,
+      bairro: resposta_servidor.autor.bairro,
+      email: resposta_servidor.autor.email,
+      telefone_celular: resposta_servidor.autor.telefone_celular,
+      telefone_fixo: resposta_servidor.autor.telefone_fixo,
+    });
+  }
 
   onChange = (e) => {
     const { name, value } = e.target;
@@ -68,70 +57,11 @@ class IncluirAutor extends React.Component {
     });
   };
 
+  async handleSubimitAutor(e) {
+    e.preventDefault();
 
-  validarDigitacaoAutor() {
-    let state = validarAutor(this.state);
-    this.setState({
-      toReturn : state.toReturn,
-      formValidation: state.formValidation,
-    })
-    return state.toReturn;
-  }
-
-  async handleSubimitAutor(e){
-    e.preventDefault();  
-
-
-    if ( this.validarDigitacaoAutor() === false ) {
-          const {
-              nome,
-              pseudonimo,
-              data_nascimento,
-              sexo,
-              rg,
-              cpf,
-              endereco,
-              cep,
-              cidade,
-              bairro,
-              email,
-              telefone_celular,
-              telefone_fixo,
-            } = this.state;
-
-        
-          let autor = {
-              nome:nome,
-              pseudonimo:pseudonimo,
-              data_nascimento:data_nascimento,
-              sexo:sexo,
-              rg:rg,
-              cpf:cpf,
-              endereco:endereco,
-              cep:cep,
-              cidade:cidade,
-              bairro:bairro,
-              email:email,
-              telefone_celular:telefone_celular,
-              telefone_fixo:telefone_fixo, 
-          } 
-
-          const resposta_servidor = await createAutor(autor); 
-
-          this.setState({
-              state:this.initState()
-          }, this.listarAutor() )
-
-    } 
-  }
-
-
-  listarAutor = () => {
-      this.props.history.push('/autor/listar');
-  }
-
-  render() {
     const {
+      id,
       nome,
       pseudonimo,
       data_nascimento,
@@ -145,14 +75,64 @@ class IncluirAutor extends React.Component {
       email,
       telefone_celular,
       telefone_fixo,
-      formValidation,
+    } = this.state;
+
+    console.log(id);
+
+    let autor = {
+      id: id,
+      nome: nome,
+      pseudonimo: pseudonimo,
+      data_nascimento: data_nascimento,
+      sexo: sexo,
+      rg: rg,
+      cpf: cpf,
+      endereco: endereco,
+      cep: cep,
+      cidade: cidade,
+      bairro: bairro,
+      email: email,
+      telefone_celular: telefone_celular,
+      telefone_fixo: telefone_fixo,
+    };
+
+    const resposta_servidor = await updateAutor(autor);
+
+    this.setState(
+      {
+        state: this.initState(),
+      },
+      this.listarAutor()
+    );
+  }
+
+  listarAutor = () => {
+    this.props.history.push("/autor/listar");
+  };
+
+  render() {
+    const {
+      id,
+      nome,
+      pseudonimo,
+      data_nascimento,
+      sexo,
+      rg,
+      cpf,
+      endereco,
+      cep,
+      cidade,
+      bairro,
+      email,
+      telefone_celular,
+      telefone_fixo,
     } = this.state;
 
     return (
       <div className="container pt-5">
         <div className="tile">
           <div className="tile-body">
-            <form onSubmit={(e) => this.handleSubimitAutor(e)}> 
+            <form onSubmit={(e) => this.handleSubimitAutor(e)}>
               <div className="row">
                 <div className="col-xs-12 col-sm-6 col-md-6">
                   <div className="form-group">
@@ -165,26 +145,9 @@ class IncluirAutor extends React.Component {
                       value={nome}
                       onChange={(e) => this.onChange(e)}
                       id="nome"
-                      className={formValidation.validNome === true ? "form-control is-invalid" : "form-control"}
+                      required
+                      className="form-control "
                     />
-                    {
-                      formValidation.validNome && (
-                         <div className="invalid-feedback">
-                           {
-                             formValidation.nome.map((erro, index ) => {
-                               return (
-                                   <p key={index} style={{ margin: "0"}}>
-                                     <span>{erro}</span>
-                                  </p>
-                               )
-                             })
-                           }
-
-                         </div> 
-                      ) 
-                    }
-
-
                   </div>
                 </div>
                 <div className="col-xs-12 col-sm-6 col-md-6">
@@ -383,11 +346,20 @@ class IncluirAutor extends React.Component {
                   </div>
                 </div>
               </div>
+              <input type="hidden" id="id" name="id" value={id} />
               <div className="center">
-                <button type="submit" className="btn btn-primary btn-lg" title="Incluir novo Registro">
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-lg"
+                  title="Incluir novo Registro"
+                >
                   Salvar Dados do Autor
                 </button>
-                <Link to="/autor/listar"  className="btn btn-secondary btn-lg ml-3" title="Cancelar a Inclusão">
+                <Link
+                  to="/autor/listar"
+                  className="btn btn-secondary btn-lg ml-3"
+                  title="Cancelar a Inclusão"
+                >
                   Cancelar Inclusão do Autor
                 </Link>
               </div>
@@ -399,4 +371,4 @@ class IncluirAutor extends React.Component {
   }
 }
 
-export default IncluirAutor;
+export default AlterarAutor;
