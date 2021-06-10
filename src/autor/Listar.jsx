@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from 'react-router-dom';
+import Paginacao from "../components/Paginacao";
 
 import { findAllAutors } from "../service/AutorService";
 
@@ -7,25 +8,50 @@ class ListarAutor extends Component {
   constructor() {
     super();
     this.state = this.initState();
+    this.setNumberPaginaAtual = this.setNumberPaginaAtual.bind(this);
   }
 
   initState = () => ({
     autores: [],
-    paginaInicio: 0,
-    paginaFim: 0,
+    paginaAtual:1,
+    pageSize:5,
+    dir:'asc',
+    props:'id',
+    total:0,
+    paginaFim:0,
+    search:'',
   });
 
-  async componentDidMount() {
-    const autores = await findAllAutors();
+  componentDidMount() {
+    this.loadData();
+  }
+
+  async loadData(){
+    const { paginaAtual, pageSize, dir, asc, search} = this.state;
+    const autores = await findAllAutors(paginaAtual,pageSize,dir,asc,search);
     this.setState({
       autores: autores.data,
-      paginaInicio: autores.current_page,
-      paginaFim: autores.total,
+      paginaAtual:autores.paginaAtual,
+      pageSize:autores.pageSize,
+      paginaFim:autores.paginaFim,
+      total:autores.total,
     });
   }
 
+
+  setNumberPaginaAtual = (pagina) => {
+    this.setState({
+      paginaAtual:pagina
+    }, () => this.updateState())
+  }
+
+  updateState = () => {
+    this.loadData();
+  } 
+
+
   render() {
-    const { autores } = this.state;
+    const { autores, paginaAtual, pageSize, paginaFim, total } = this.state;
 
     return (
       <div>
@@ -77,6 +103,11 @@ class ListarAutor extends Component {
 
                   </tbody>
                 </table>
+                <Paginacao paginaAtual={paginaAtual}
+                           pageSize={pageSize}
+                           paginaFim={paginaFim}
+                           total={total}
+                           setRenderPaginaCorrente={(pagina) => this.setNumberPaginaAtual(pagina)}/>
                 <Link className="btn btn-success btn-lg" to="/autor/inserir" title="Incluir novo Registro">
                   <i className="fa fa-plus-circle"></i>
                 </Link>

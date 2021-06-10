@@ -83,6 +83,7 @@ class IncluirAutor extends React.Component {
 
 
     if ( this.validarDigitacaoAutor() === false ) {
+      
           const {
               nome,
               pseudonimo,

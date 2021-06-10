@@ -1,12 +1,19 @@
 
 import http from '../util/banco';
 
-export const findAllAutors = async () => {
+export const findAllAutors = async (paginaAtual,pageSize,dir,props,search) => {
     return (
-        http.get('/autor/listar')
-            .then( res => {
-                return res.data;
-            })
+        http.get('/autor/listar',{
+           params:{
+               paginaAtual,
+               pageSize,
+               dir,
+               props,
+               search
+           }, 
+        }).then( res => {
+           return res.data;
+        })
     )
 } 
 
