@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Link } from 'react-router-dom';
+import Cabecalho from "../components/Cabecalho";
+import Nav from "../components/Nav";
 import Paginacao from "../components/Paginacao";
 
 import { findAllAutors } from "../service/AutorService";
@@ -55,20 +57,9 @@ class ListarAutor extends Component {
 
     return (
       <div>
+        <Nav/>
         <div className="container">
-          <div className="app-title">
-            <h1>
-              <i className="fa fa-edit">Lista de usuários</i>
-            </h1>
-            <ul className="app-breadcrumb breadcrumb">
-              <li className="breadcrumb-item">
-                <i className="fa fa-search fa-lg"></i>
-              </li>
-              <li className="breadcrumb-item">
-                <a href="#">Menu Principal</a>
-              </li>
-            </ul>
-          </div>
+           <Cabecalho path="/" tituloPagina="Listagem de Autores" tituloPesquisa="Menu Principal"/>
         </div>
         <div className="container">
           <div className="tile">

@@ -18,7 +18,7 @@ export const validarAutor = (state) => {
         telefone_fixo,
         toReturn,
         formValidation,
-      } = state;
+    } = state;
 
 
       if ( nome.trim().length > 100 ) {

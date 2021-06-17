@@ -1,8 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { findAutorById, updateAutor } from "../service/AutorService";
+import Cabecalho from "../components/Cabecalho";
+import Nav from "../components/Nav";
 
 class AlterarAutor extends React.Component {
+  
   constructor(props) {
     super(props);
     this.state = this.initState();
@@ -129,7 +132,9 @@ class AlterarAutor extends React.Component {
     } = this.state;
 
     return (
-      <div className="container pt-5">
+      <div className="container">
+        <Nav/>
+        <Cabecalho path="/autor/listar" tituloPagina="Cadastro de Autores" tituloPesquisa="Lista de Autores"/> 
         <div className="tile">
           <div className="tile-body">
             <form onSubmit={(e) => this.handleSubimitAutor(e)}>

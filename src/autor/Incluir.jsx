@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Cabecalho from "../components/Cabecalho";
+import Nav from "../components/Nav";
 import { createAutor } from "../service/AutorService";
 import { validarAutor } from "../validacao/ValidAutor";
 
@@ -150,7 +152,10 @@ class IncluirAutor extends React.Component {
     } = this.state;
 
     return (
-      <div className="container pt-5">
+
+      <div className="container">
+        <Nav/>
+        <Cabecalho path="/autor/listar" tituloPagina="Cadastro de Autores" tituloPesquisa="Lista de Autores"/>
         <div className="tile">
           <div className="tile-body">
             <form onSubmit={(e) => this.handleSubimitAutor(e)}> 
@@ -212,7 +217,7 @@ class IncluirAutor extends React.Component {
                       Data Nascimento:
                     </label>
                     <input
-                      type="text"
+                      type="date"
                       name="data_nascimento"
                       value={data_nascimento}
                       onChange={(e) => this.onChange(e)}
